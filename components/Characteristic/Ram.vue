@@ -2,11 +2,12 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {useRAMStore} from "~/stores/Characteristic/RAM.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -24,7 +25,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsRam(id: ${id}){
+                      characteristicsRam(id: ${props.id}){
                         data{
                           attributes{
                             ram_name
@@ -71,5 +72,18 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
       <p>Объём памяти: {{ ram.data.attributes.Memory_size }}гб</p>
       <p>Частота: {{ ram.data.attributes.Frequency }}мгц</p>
       <p>XMP профили: {{ ram.data.attributes.Profiles_XMP ? 'есть' : 'нет' }}</p>
+
+      <a-button @click="()=>{
+        useRAMStore().set({
+          name: ram.data.attributes.ram_name,
+          ram: ram.data.attributes.ram_type,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>
+a

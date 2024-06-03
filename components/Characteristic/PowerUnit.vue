@@ -2,11 +2,13 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {builderHDDState} from "~/stores/Characteristic/HDD.store";
+import {builderPowerUnitState} from "~/stores/Characteristic/PowerUnit.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -19,7 +21,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsPowerUnit(id: ${id}){
+                      characteristicsPowerUnit(id: ${props.id}){
                         data{
                           attributes{
                             Name
@@ -56,5 +58,15 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
       <p>Модель: {{ powerUnit.attributes.Name }}</p>
       <p>Форм-фактор: {{ powerUnit.attributes.Form_factor }}</p>
       <p>Мощность: {{ powerUnit.attributes.Power}}</p>
+      <a-button @click="()=>{
+        builderPowerUnitState().set({
+          name: powerUnit.attributes.Name,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>

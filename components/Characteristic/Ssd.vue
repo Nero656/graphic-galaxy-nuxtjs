@@ -2,11 +2,13 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {builderHDDState} from "~/stores/Characteristic/HDD.store";
+import {builderSSDState} from "~/stores/Characteristic/SSD.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -19,7 +21,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsSsd(id: ${id}){
+                      characteristicsSsd(id: ${props.id}){
                         data{
                           attributes{
                             name
@@ -56,5 +58,16 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
       <p>Модель: {{ ssd.attributes.name }}</p>
       <p>Объем: {{ ssd.attributes.Memory_size }} гб</p>
       <p>M2: {{ ssd.attributes.m2 ? 'Есть' : 'Нету' }}</p>
+
+     <a-button @click="()=>{
+        builderSSDState().set({
+          name: ssd.attributes.name,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>

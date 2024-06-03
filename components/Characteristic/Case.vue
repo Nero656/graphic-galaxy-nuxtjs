@@ -2,11 +2,13 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {builderCaseState} from "~/stores/Characteristic/Case.store";
 
-const {id, name, img} = defineProps({
+
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -18,7 +20,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsComputerCase(id: ${id}){
+                      characteristicsComputerCase(id: ${props.id}){
                         data{
                           attributes{
                             Case_name
@@ -52,5 +54,15 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
    <span>
       <p>Модель: {{ computerCase.attributes.Case_name }}</p>
       <p>Форм-фактор {{ computerCase.attributes.Form_factor }}</p>
+     <a-button @click="()=>{
+        builderCaseState().set({
+          name: computerCase.attributes.Case_name,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>

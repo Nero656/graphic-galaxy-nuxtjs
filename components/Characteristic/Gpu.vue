@@ -2,11 +2,12 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {useGPUStore} from "~/stores/Characteristic/GPU.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -26,7 +27,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsGpu(id: ${id}){
+                      characteristicsGpu(id: ${props.id}){
                         data{
                           id
                           attributes{
@@ -78,5 +79,17 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
       <p>Тип памяти: GDDR{{ gpu.data.attributes.Memory_type }}</p>
       <p>Техпроцесс: {{ gpu.data.attributes.Techprocess }}нм</p>
       <p>Частота процессора: {{ gpu.data.attributes.frequency }}</p>
+
+       <a-button @click="()=>{
+        useGPUStore().set({
+          name: gpu.data.attributes.Gpu_name,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
+
    </span>
 </template>

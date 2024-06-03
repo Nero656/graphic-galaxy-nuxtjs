@@ -2,11 +2,13 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {useGPUStore} from "~/stores/Characteristic/GPU.store";
+import {useMBStore} from "~/stores/Characteristic/Motherboard.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -27,7 +29,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsMotherboard(id: ${id}){
+                      characteristicsMotherboard(id: ${props.id}){
                         data{
                           attributes{
                             Matherboard_name
@@ -83,5 +85,19 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
       <p>Количество слотов памяти: {{ motherboard.data.attributes.Number_of_memory_slots }}</p>
       <p>NVMe: {{ motherboard.data.attributes.NVMe ? 'есть' : 'нет' }}</p>
       <p>Количество NVMe конвекторов : {{ motherboard.data.attributes.Number_of_M2_connectors }}</p>
+
+     <a-button @click="()=>{
+        useMBStore().set({
+          name: motherboard.data.attributes.Matherboard_name,
+          socket:  motherboard.data.attributes.Socket,
+          chipset: motherboard.data.attributes.Chipset,
+          ram: motherboard.data.attributes.Memory_type,
+          img: props.imageUrl,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>

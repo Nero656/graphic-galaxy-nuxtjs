@@ -2,6 +2,7 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {useOrderStore} from '@/stores/orderList.store'
 
 const path = useRoute()
 
@@ -82,7 +83,6 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
   },
   server: false,
 })
-
 </script>
 
 <template>
@@ -95,7 +95,19 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
           <h3 style="margin: 0; margin-bottom: 20px">
             {{ product.data.attributes.Name }}
           </h3>
-          <sf-button style="height: 4vh; padding: 1rem"><SfIconAddShoppingCart/></sf-button>
+          <sf-button style="height: 4vh; padding: 1rem"
+          @click="()=>{
+            useOrderStore().set({
+            id:  useOrderStore().isState.length,
+            Name: product.data.attributes.Name,
+            Description:product.data.attributes.Description ,
+            Image : product.data.attributes.Image.data.attributes.url,
+            Price : product.data.attributes.Price,
+            quantity: 1
+            })
+          }">
+            <SfIconAddShoppingCart/>
+          </sf-button>
         </div>
       </template>
       <template #content>
@@ -108,39 +120,59 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
             <a-tab-pane key="1" tab="Описание">{{ product.data.attributes.Description }}</a-tab-pane>
             <a-tab-pane key="2" tab="Характеристики">
               <span v-if="product.data.attributes.category_type_id === 0">
-                <CharacteristicCpu :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicCpu
+                    :id="product.data.attributes.characteristic_id"
+                    :imageUrl="product.data.attributes.Image.data.attributes.url"
+                    :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 1">
-                <CharacteristicGpu :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicGpu
+                  :id="product.data.attributes.characteristic_id"
+                  :imageUrl="product.data.attributes.Image.data.attributes.url"
+                  :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 2">
-                <CharacteristicRam :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicRam :id="product.data.attributes.characteristic_id"
+                                   :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                   :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 3">
-                <CharacteristicMotherboard :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicMotherboard :id="product.data.attributes.characteristic_id"
+                                           :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                           :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 4">
-                <CharacteristicCoolingCpu :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicCoolingCpu :id="product.data.attributes.characteristic_id"
+                                          :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                          :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 5">
-                <CharacteristicSsd :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicSsd :id="product.data.attributes.characteristic_id"
+                                   :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                   :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 6">
-                <CharacteristicPowerUnit :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicPowerUnit :id="product.data.attributes.characteristic_id"
+                                         :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                         :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 7">
-                <CharacteristicHdd :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicHdd :id="product.data.attributes.characteristic_id"
+                                   :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                   :price="product.data.attributes.Price"/>
               </span>
 
               <span v-if="product.data.attributes.category_type_id === 8">
-                <CharacteristicCase :id="product.data.attributes.characteristic_id"/>
+                <CharacteristicCase :id="product.data.attributes.characteristic_id"
+                                    :imageUrl="product.data.attributes.Image.data.attributes.url"
+                                    :price="product.data.attributes.Price"/>
               </span>
             </a-tab-pane>
           </a-tabs>

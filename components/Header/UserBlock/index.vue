@@ -1,28 +1,17 @@
 <script setup lang="ts">
-import {SfButton, SfIconFavorite, SfIconPerson, SfIconShoppingCart} from "@storefront-ui/vue";
-import {SfIconLogin} from "#components";
+import {SfButton, SfIconPerson} from "@storefront-ui/vue"
+import {SfIconLogin} from "#components"
+
 
 const actionItems = [
   {
-    icon: SfIconShoppingCart,
-    ariaLabel: 'Cart',
-    role: 'button',
-    label: '',
-  },
-  {
-    icon: SfIconFavorite,
-    ariaLabel: 'Wishlist',
-    role: 'button',
-    label: '',
-  },
-  {
-    label: 'Log in',
+    label: 'Войти',
     icon: SfIconLogin,
     ariaLabel: 'Log in',
     role: 'login',
   },
   {
-    label: 'Sign up',
+    label: 'Зарегистрироваться',
     icon: SfIconPerson,
     ariaLabel: 'Sign up',
     role: 'Signup',

@@ -2,11 +2,12 @@
 import {useLazyFetch} from "#app"
 import {ref} from 'vue';
 import {gql} from 'nuxt-graphql-request/utils'
+import {builderCoolingCPUState} from "~/stores/Characteristic/CoolingCpu.store";
 
-const {id, name, img} = defineProps({
+const props = defineProps({
   id: Number,
-  name: String,
-  img: {}
+  imageUrl: String,
+  price: Number,
 })
 
 type obj = {
@@ -21,7 +22,7 @@ type obj = {
 }
 
 const query = gql`query{
-                      characteristicsCoolingCpu(id: ${id}){
+                      characteristicsCoolingCpu(id: ${props.id}){
                         data{
                           attributes{
                             cooling_name
@@ -57,9 +58,20 @@ const {data, error: fetchError} = await useLazyFetch('http://192.168.1.90:1337/g
 
 <template>
    <span>
-
       <p>Модель: {{ coolingCpu.data.attributes.cooling_name }}</p>
       <p>tdp: {{ coolingCpu.data.attributes.tdp }}</p>
       <p>Сокет: {{ coolingCpu.data.attributes.Socket }}</p>
+
+     <a-button @click="()=>{
+        builderCoolingCPUState().set({
+          name: coolingCpu.data.attributes.cooling_name,
+          img: props.imageUrl,
+          tdp: coolingCpu.data.attributes.tdp,
+          price: props.price,
+          chosen: true
+        })
+      }">
+        Добавить в сборку
+      </a-button>
    </span>
 </template>

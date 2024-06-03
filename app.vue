@@ -1,7 +1,7 @@
 <template>
   <Header/>
   <div class="p-6">
-    <NuxtPage/>
+    <NuxtPage class="content"/>
   </div>
 </template>
 
@@ -22,7 +22,9 @@
     --background-end-rgb: 255, 255, 255;
   }
 }
-
+.content{
+  margin-top: 100px;
+}
 body {
   min-height: 100vh;
   /*color: rgb(var(--foreground-rgb));*/

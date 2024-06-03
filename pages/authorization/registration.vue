@@ -59,8 +59,7 @@ const sendForm = async () => {
   if (error.value) {
     console.error('Error:', error.value)
   } else {
-    location.replace('/Registration/Auth/page')
-    // console.log(data.value.data.login.user.username)
+    location.replace('/authorization/auth')
   }
 }
 </script>
@@ -108,6 +107,7 @@ const sendForm = async () => {
   border: .1px solid #dedede;
   border-radius: 10px;
   margin: auto;
+  margin-top: 150px;
   width: 50vw;
 }
 </style>

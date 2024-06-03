@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import {useFetch} from "#app"
+import {useLazyFetch} from "#app"
 import {SfInput} from "@storefront-ui/vue"
 import { gql } from 'nuxt-graphql-request/utils';
+import {useAuthStore} from "@/stores/auth.store"
 
 type LoginResponse = {
-  login: {
     jwt: string,
     user: {
       id: number,
       username: string,
       email: string
     }
-  }
 }
+
 const email  = ref('')
 const password = ref('')
 
@@ -28,28 +28,23 @@ const query = gql`mutation($email: String!, $password: String!) {
                           }
                         }`
 
-const variables = ref({
-  email: email.value,
-  password: password.value
-})
-
 const sendForm = async () => {
-  const { data, error } = await useFetch<LoginResponse>('http://192.168.1.90:1337/graphql', {
+  const { data, error } = await useLazyFetch('http://192.168.1.90:1337/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       query: query,
-      variables: variables
-    })
+      variables: {
+        email: email.value,
+        password: password.value
+      }
+    }),
+    transform: (getUser: any) =>{
+      useAuthStore().set(getUser.data.login)
+      location.replace('/')
+    },
+    server: false
   })
-
-  if (error.value) {
-    console.error('Error:', error.value)
-  } else {
-    // useState('token', () => data.value.data.login.jwt)
-    //
-    // console.log(data.value.data.login.user.username)
-  }
 }
 </script>
 
@@ -57,7 +52,6 @@ const sendForm = async () => {
   <div class="bg-white p-4 AuthForm">
     <h1 class="mb-4 text-3xl text-center font-bold">Авторизация</h1>
     <form @submit.prevent='sendForm'>
-
       <div class="mt-4">
         <span class="typography-label-sm font-medium">Email:</span>
         <SfInput
@@ -88,6 +82,7 @@ const sendForm = async () => {
   border: .1px solid #dedede;
   border-radius: 10px;
   margin: auto;
+  margin-top: 150px;
   width: 50vw;
 }
 </style>
